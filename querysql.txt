@@ -1,0 +1,40 @@
+create table user_role(user_name varchar2(20) primary key, password varchar2(12), role_code varchar2(20));
+
+create table accounts(account_number number(10) primary key,insured_name varchar2(30), user_name varchar2(20),
+						constraint fk_user foreign key (user_name) REFERENCES user_role(user_name));
+						
+create table policy (policy_number number(10) primary key,policy_type varchar2(20), policy_premium decimal(15,4), account_number number(10),
+								constraint fk_account_number foreign key (account_number) REFERENCES accounts(account_number));
+								
+create table policy_details (policy_number number(10), claim_number number(10) ,question_id number(10), answer varchar2(30),
+							constraint fk_policy_number FOREIGN KEY (policy_number) REFERENCES policy(policy_number));
+							
+create table claim(claim_number number(10) primary key, claim_reason varchar2(30), accident_location_street varchar2(40), accident_city varchar2(15),
+							accident_state varchar2(15), accident_zip number(5), claim_type varchar2(30), policy_number number(10), 
+													constraint fk_policy FOREIGN KEY (policy_number) REFERENCES policy(policy_number));
+													
+create table claim_questions(ques_id number(10) primary key, policy_type varchar2(20),ques_desc varchar2(80),ques_ans1 varchar2(30),
+																					ques_ans2 varchar2(30));
+
+create sequence policy_number_seq start with 10027;
+create sequence account_number_seq start with 1870011516;
+create sequence claim_number_seq start with 5005;
+create sequence question_number_seq start with 21;
+
+insert into user_role values('Mukul','Mukul123','CLAIM ADJUSTER');
+insert into user_role values('Harish', 'Harish123', 'INSURED');
+insert into user_role values('Ashwini', 'Ashwini123', 'CLAIM HANDLER');
+
+ insert into accounts values(account_number_seq.nextval,'Harish','Ashwini');
+ 
+insert into policy values(policy_number_seq.nextval,'AUTOMOBILE',25000,1870011516);
+insert into policy values(policy_number_seq.nextval,'MEDICAL',35000,1870011517);
+
+insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Are you the registered owner of the vehicle?','yes','no');
+insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Was the police report taken?','yes','no');
+insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Do you have the desired bills?','yes','no');
+insert into claim_questions values(question_number_seq.nextval,'AUTOMOBILE','Do you want full claim amount reimbursement?','yes','no');
+insert into claim_questions values(question_number_seq.nextval,'MEDICAL','Was the police verification done in hospital?','yes','no');
+insert into claim_questions values(question_number_seq.nextval,'MEDICAL','Do you want full claim amount reimbursement?','yes','no');
+ insert into claim_questions values(question_number_seq.nextval,'MEDICAL','Do you have the desired bills?','yes','no');
+   
