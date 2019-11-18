@@ -1,0 +1,73 @@
+desc user_role;
+Select * from user_role;
+desc accounts;
+Select * from accounts;
+desc policy;
+Select * from policy;
+
+desc policy_details; 
+
+----
+create sequence policy_no_seq start with 20001;
+create sequence account_no_seq start with 9876123410;
+create sequence claim_no_seq start with 2001;
+create sequence question_no_seq start with 21;
+------
+create table user_role(user_name varchar2(20) primary key, password varchar2(12), role_code varchar2(20));
+insert into user_role values('Janwhi','Xyz@123','CLAIM ADJUSTER');
+insert into user_role values('Pradeepa', 'Xyz@123', 'CLAIM HANDLER');
+insert into user_role values('Prasad', 'Xyz@123', 'INSURED');
+insert into user_role values('Renu', 'Xyz@123', 'INSURED');
+insert into user_role values('Tanuj', 'Xyz@123', 'INSURED');
+insert into user_role values('Nikhil', 'Xyz@123', 'CLAIM HANDLER');
+
+
+-----
+create table accounts(account_no number(10) primary key,insured_name varchar2(30), user_name varchar2(20),
+						constraint fk_user foreign key (user_name) REFERENCES user_role(user_name));
+
+insert into accounts values(account_no_seq.nextval,'Prasad','Janwhi');
+insert into accounts values(account_no_seq.nextval,'Renu','Pradeepa');
+insert into accounts values(account_no_seq.nextval,'Keerthi','Pradeepa');
+insert into accounts values(account_no_seq.nextval,'Tanuj','Nikhil');
+
+-----
+create table policy (policy_no number(10) primary key,policy_type varchar2(20), policy_premium decimal(15,4), account_no number(10),
+						constraint fk_account_no foreign key (account_no) REFERENCES accounts(account_no));
+
+insert into policy values(policy_no_seq.nextval,'Accident',25000,9876123410);
+insert into policy values(policy_no_seq.nextval,'Theft',30000,9876123411);
+insert into policy values(policy_no_seq.nextval,'Theft',35000,9876123412);
+insert into policy values(policy_no_seq.nextval,'Theft',40000,9876123413);
+
+--------
+create table policy_details (policy_no number(10), question_id number(10), answer varchar2(30),
+							constraint fk_policy_no FOREIGN KEY (policy_no) REFERENCES policy(policy_no));
+
+--------
+create table claim(claim_no number(10) primary key, claim_reason varchar2(30), location_street varchar2(40), city varchar2(15),state varchar2(15), zip number(6), claim_type varchar2(30), policy_no number(10), 
+						constraint fk_policy FOREIGN KEY (policy_no) REFERENCES policy(policy_no));
+
+
+--------
+create table claim_questions(ques_id number(10) primary key, policy_type varchar2(20),ques_desc varchar2(80),ques_ans1 varchar2(30),ques_ans2 varchar2(30));
+
+insert into claim_questions values(question_no_seq.nextval,'Accident','Are you the registered owner of the vehicle?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Accident','Do you have the desired bills?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Accident','Do you want full claim amount reimbursement?','yes','no');
+
+insert into claim_questions values(question_no_seq.nextval,'Theft','police verification done in hospital?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Theft','Do you have the desired bills?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Theft','Do you want full claim amount reimbursement?','yes','no');
+
+
+insert into claim_questions values(question_no_seq.nextval,'Natural Calamities','have you completed police verification?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Property damage','Do you have the desired bills?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Property damage','Do you want full claim amount reimbursement?','yes','no');
+
+insert into claim_questions values(question_no_seq.nextval,'Natural Calamities','have you completed police verification?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Natural Calamities','Do you have the desired bills?','yes','no');
+insert into claim_questions values(question_no_seq.nextval,'Natural Calamities','Do you want full claim amount reimbursement?','yes','no');
+
+
+   
